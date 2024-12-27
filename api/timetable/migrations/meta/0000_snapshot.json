@@ -1,0 +1,173 @@
+{
+  "id": "0fc63c18-c458-447c-bd7f-c9b6ee980a7c",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.locations": {
+      "name": "locations",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "code": {
+          "name": "code",
+          "type": "varchar(10)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.prayer_times": {
+      "name": "prayer_times",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "location_id": {
+          "name": "location_id",
+          "type": "serial",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "date": {
+          "name": "date",
+          "type": "varchar(10)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "fajr": {
+          "name": "fajr",
+          "type": "varchar(5)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "fajr_jamat": {
+          "name": "fajr_jamat",
+          "type": "varchar(5)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dhuhr": {
+          "name": "dhuhr",
+          "type": "varchar(5)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dhuhr_jamat": {
+          "name": "dhuhr_jamat",
+          "type": "varchar(5)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "asr": {
+          "name": "asr",
+          "type": "varchar(5)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "asr2": {
+          "name": "asr2",
+          "type": "varchar(5)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "asr_jamat": {
+          "name": "asr_jamat",
+          "type": "varchar(5)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "maghrib": {
+          "name": "maghrib",
+          "type": "varchar(5)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "maghrib_jamat": {
+          "name": "maghrib_jamat",
+          "type": "varchar(5)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "isha": {
+          "name": "isha",
+          "type": "varchar(5)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "isha_jamat": {
+          "name": "isha_jamat",
+          "type": "varchar(5)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sunrise": {
+          "name": "sunrise",
+          "type": "varchar(5)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "prayer_times_location_id_locations_id_fk": {
+          "name": "prayer_times_location_id_locations_id_fk",
+          "tableFrom": "prayer_times",
+          "tableTo": "locations",
+          "columnsFrom": [
+            "location_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

@@ -1,6 +1,15 @@
 // timetable.ts
 import { api, APIError, ErrCode } from "encore.dev/api";
 import { secret } from "encore.dev/config";
+import { db } from "./database";
+import { locations } from "./schema";
+
+export interface Location {
+  id: number;
+  name: string;
+  code: string;
+  description: string;
+}
 
 interface TimetableLondonParams {
   year: number;
@@ -73,5 +82,30 @@ export const getLondonPrayerTimes = api(
         error: "Internal server error",
       };
     }
+  }
+);
+
+export const createLocation = api(
+  { method: "POST", path: "/locations" },
+  async (data: { name: string; code: string }) => {
+    const [location] = await db.insert(locations).values(data).returning();
+    if (!location) {
+      return APIError.aborted("Error creating location");
+    }
+    return {
+      success: true,
+      result: location,
+    };
+  }
+);
+
+export const getLocations = api(
+  { method: "GET", path: "/locations" },
+  async () => {
+    const location = await db.select().from(locations);
+    return {
+      success: true,
+      result: location,
+    };
   }
 );
