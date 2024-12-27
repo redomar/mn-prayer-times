@@ -7,8 +7,8 @@ CREATE TABLE "locations" (
 --> statement-breakpoint
 CREATE TABLE "prayer_times" (
 	"id" serial PRIMARY KEY NOT NULL,
-	"location_id" serial NOT NULL,
-	"date" varchar(10) NOT NULL,
+	"location_id" integer,
+	"date" date NOT NULL,
 	"fajr" varchar(5),
 	"fajr_jamat" varchar(5),
 	"dhuhr" varchar(5),

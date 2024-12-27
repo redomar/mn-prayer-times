@@ -5,7 +5,6 @@ const DB = new SQLDatabase("prayer-timetable", {
   migrations: {
     path: "./migrations",
     source: "drizzle",
-    
   },
 });
 

@@ -1,5 +1,5 @@
 // schema.ts
-import { pgTable, serial, text, varchar } from "drizzle-orm/pg-core";
+import { date, integer, pgTable, serial, text, varchar } from "drizzle-orm/pg-core";
 
 const locations = pgTable("locations", {
   id: serial("id").primaryKey(),
@@ -45,8 +45,8 @@ const locations = pgTable("locations", {
 
 const prayerTimes = pgTable("prayer_times", {
   id: serial("id").primaryKey(),
-  locationId: serial("location_id").references(() => locations.id),
-  date: varchar("date", { length: 10 }).notNull(),
+  locationId: integer("location_id").references(() => locations.id),
+  date: date("date", { mode: "string" }).notNull(),
   fajr: varchar("fajr", { length: 5 }),
   fajrJamat: varchar("fajr_jamat", { length: 5 }),
   dhuhr: varchar("dhuhr", { length: 5 }),

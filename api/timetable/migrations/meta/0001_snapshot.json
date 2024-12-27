@@ -1,6 +1,6 @@
 {
-  "id": "f138f011-7c30-4b12-9f61-c0b3c75ab558",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "6e42aee8-a94f-4905-8d4e-19bdd4f70b41",
+  "prevId": "f138f011-7c30-4b12-9f61-c0b3c75ab558",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -141,15 +141,15 @@
         "prayer_times_location_id_locations_id_fk": {
           "name": "prayer_times_location_id_locations_id_fk",
           "tableFrom": "prayer_times",
-          "tableTo": "locations",
           "columnsFrom": [
             "location_id"
           ],
+          "tableTo": "locations",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -161,10 +161,10 @@
   },
   "enums": {},
   "schemas": {},
+  "views": {},
   "sequences": {},
   "roles": {},
   "policies": {},
-  "views": {},
   "_meta": {
     "columns": {},
     "schemas": {},

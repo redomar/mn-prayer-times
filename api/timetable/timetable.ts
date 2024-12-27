@@ -2,14 +2,8 @@
 import { api, APIError, ErrCode } from "encore.dev/api";
 import { secret } from "encore.dev/config";
 import { db } from "./database";
-import { locations } from "./schema";
-
-export interface Location {
-  id: number;
-  name: string;
-  code: string;
-  description: string;
-}
+import { prayerTimes } from "./schema";
+import { PrayerTimes } from "./times";
 
 interface TimetableLondonParams {
   year: number;
@@ -60,15 +54,42 @@ async function fetchLondonPrayerTimes(year: number, month: string) {
   };
 }
 
-export const getLondonPrayerTimes = api(
+export const collectFromLondon = api(
   { method: "GET", path: "/london/:year/:month" },
-  async (p: TimetableLondonParams): Promise<TimetableLondonResponse> => {
+  async (p: TimetableLondonParams) => {
     try {
       const result = await fetchLondonPrayerTimes(p.year, p.month);
 
+      const times = result.data.times;
+
+      const body = Object.keys(times).map((date) => {
+        const time = times[date];
+        return {
+          date: date,
+          locationId: 1,
+          fajr: time.fajr,
+          fajrJamat: time.fajr_jamat,
+          dhuhr: time.dhuhr,
+          dhuhrJamat: time.dhuhr_jamat,
+          asr: time.asr,
+          asr2: time.asr_2,
+          asrJamat: time.asr_jamat,
+          maghrib: time.magrib,
+          maghribJamat: time.magrib_jamat,
+          isha: time.isha,
+          ishaJamat: time.isha_jamat,
+          sunrise: time.sunrise,
+        };
+      });
+
+      const savePrayerTimes = await db
+        .insert(prayerTimes)
+        .values(body)
+        .returning();
+
       return {
-        status: ErrCode.OK, // or just 200
-        body: result.data,
+        status: ErrCode.OK,
+        body: savePrayerTimes,
       };
     } catch (error) {
       if (error instanceof APIError) {
@@ -79,33 +100,8 @@ export const getLondonPrayerTimes = api(
       }
       return {
         status: 500,
-        error: "Internal server error",
+        error
       };
     }
-  }
-);
-
-export const createLocation = api(
-  { method: "POST", path: "/locations" },
-  async (data: { name: string; code: string }) => {
-    const [location] = await db.insert(locations).values(data).returning();
-    if (!location) {
-      return APIError.aborted("Error creating location");
-    }
-    return {
-      success: true,
-      result: location,
-    };
-  }
-);
-
-export const getLocations = api(
-  { method: "GET", path: "/locations" },
-  async () => {
-    const location = await db.select().from(locations);
-    return {
-      success: true,
-      result: location,
-    };
   }
 );
