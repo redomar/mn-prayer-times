@@ -1,18 +1,18 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* :root {
+/* 
+:root {
   --background: #ffffff;
   --foreground: #171717;
 } */
 
-:root {
-  /* --background: #fdbd03; */
+/* :root {
   --background: #fd116f;
   --foreground: #ededed;
-}
+} */
 
+/* --background: #fdbd03; */
 /* @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
