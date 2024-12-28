@@ -1,9 +1,9 @@
 "use client";
-import { timetable } from "./client";
-import Client, { Local } from "./client";
+import { Environment, timetable } from "./client";
+import Client from "./client";
 import { useEffect, useState } from "react";
 
-const client = new Client(Local);
+const client = new Client(Environment("staging"));
 
 const formatTimeForICS = (date: string, time: string) => {
   const [hours, minutes] = time.split(":");
