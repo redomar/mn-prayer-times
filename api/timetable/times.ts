@@ -7,6 +7,7 @@ import { eq, sql } from "drizzle-orm";
 export interface PrayerTimes {
   id: number;
   locationId: Location["id"];
+  location?: Location;
   date: string;
   fajr: string;
   fajrJamat: string;
@@ -65,7 +66,7 @@ export const prayerTimesFindLocationTime = api(
 
 export const prayerTimesList = api(
   { expose: true, method: "GET", path: "/times" },
-  async () => {
+  async (): Promise<{ success: boolean; result: PrayerTimes[] }> => {
     const results = await db
       .select()
       .from(prayerTimes)
@@ -81,8 +82,9 @@ export const prayerTimesList = api(
           code: record.locations.code,
           description: record.locations.description,
         },
+        locationId: record.prayer_times.locationId ?? 0, // ensure locationId is a number
       };
-    });
+    }) as PrayerTimes[];
 
     return {
       success: true,

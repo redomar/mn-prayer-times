@@ -1,101 +1,111 @@
-import Image from "next/image";
+import { timetable } from "./client";
+import Client, { Local } from "./client";
 
-export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+const client = new Client(Local);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+// Function to format date
+const formatDate = (date: string) => {
+  return new Date(date).toLocaleDateString("en-GB", {
+    weekday: "short",
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  });
+};
+
+// Function to determine row styling
+const getRowClassName = (date: string) => {
+  const currentDate = new Date(date);
+  const isToday = date === new Date().toISOString().split("T")[0];
+  const isWeekend = currentDate.getDay() === 6 || currentDate.getDay() === 0;
+  const isFirstOfMonth = currentDate.getDate() === 1;
+
+  if (isToday) return "bg-blue-600 font-bold";
+  if (isWeekend) return "bg-red-500/5 text-gray-400";
+  if (isFirstOfMonth) return "bg-green-400/60 text-black";
+  return "even:bg-red-900/40 odd:bg-red-900/50";
+};
+
+// Function to filter and sort times
+const processTimesData = (times: timetable.PrayerTimes[]) => {
+  return times
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+    .filter((time) => {
+      const date = new Date(time.date);
+      return date.getTime() > Date.now() - 1000 * 60 * 60 * 24;
+    });
+};
+
+// Table Header Component
+const TableHeader = () => (
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Fajr</th>
+      <th>Fajr Jamat</th>
+      <th>Dhuhr Jamat</th>
+      <th>Asr Jamat</th>
+      <th>Maghrib</th>
+      <th>Isha Jamat</th>
+    </tr>
+  </thead>
+);
+
+// Table Row Component
+const TableRow = ({ time }: { time: timetable.PrayerTimes }) => (
+  <tr key={time.id} className={getRowClassName(time.date)}>
+    <td className="font-mono">{formatDate(time.date)}</td>
+    <td>{time.fajr}</td>
+    <td>{time.fajrJamat}</td>
+    <td>{time.dhuhrJamat}</td>
+    <td>{time.asrJamat}</td>
+    <td>{time.maghrib}</td>
+    <td>{time.ishaJamat}</td>
+  </tr>
+);
+
+// Prayer Times Table Component
+const PrayerTimesTable = ({ times }: { times: timetable.PrayerTimes[] }) => (
+  <>
+    <div className="text-center text-4xl">
+      Prayer times for {times[0].location?.name ?? "Unknown location"}
     </div>
+    <table className="table-auto max-w-3xl w-full text-center mx-auto bg-black">
+      <TableHeader />
+      <tbody className="divide-y divide-gray-400">
+        {processTimesData(times).map((time) => (
+          <TableRow key={time.id} time={time} />
+        ))}
+      </tbody>
+    </table>
+  </>
+);
+
+// Main Page Component
+export default async function Home() {
+  const times = await client.timetable.prayerTimesList();
+
+  if (times.success === false) {
+    return <div>Error</div>;
+  }
+
+  // group times by location
+  const timesByLocation = times.result.reduce((acc, time) => {
+    if (!acc[time.locationId]) {
+      acc[time.locationId] = [];
+    }
+    acc[time.locationId].push(time);
+    return acc;
+  }, {} as Record<number, timetable.PrayerTimes[]>);
+
+  return (
+    <main>
+      <div>
+        {Object.keys(timesByLocation).map((locationId) => {
+          const id = Number(locationId);
+          return <PrayerTimesTable key={id} times={timesByLocation[id]} />;
+        })}
+      </div>
+    </main>
   );
 }
