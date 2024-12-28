@@ -1,7 +1,102 @@
+"use client";
 import { timetable } from "./client";
 import Client, { Local } from "./client";
+import { useEffect, useState } from "react";
 
 const client = new Client(Local);
+
+const formatTimeForICS = (date: string, time: string) => {
+  const [hours, minutes] = time.split(":");
+  const dateObj = new Date(date);
+  dateObj.setHours(parseInt(hours), parseInt(minutes));
+  return dateObj.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+};
+
+const createICSEvent = (date: string, prayerName: string, time: string) => {
+  const startTime = formatTimeForICS(date, time);
+  const endTime =
+    new Date(
+      new Date(
+        startTime.slice(0, 4) +
+          "-" +
+          startTime.slice(4, 6) +
+          "-" +
+          startTime.slice(6, 8) +
+          "T" +
+          startTime.slice(9, 11) +
+          ":" +
+          startTime.slice(11, 13) +
+          "Z",
+      ).getTime() +
+        5 * 60000,
+    )
+      .toISOString()
+      .replace(/[-:]/g, "")
+      .split(".")[0] + "Z";
+
+  return [
+    "BEGIN:VEVENT",
+    `DTSTART:${startTime}`,
+    `DTEND:${endTime}`,
+    `SUMMARY:${prayerName} Prayer`,
+    "END:VEVENT",
+  ].join("\n");
+};
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const downloadICS = (
+  prayer: timetable.PrayerTimes,
+  prayerName: string,
+  time: string,
+) => {
+  const icsContent = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "CALSCALE:GREGORIAN",
+    "METHOD:PUBLISH",
+    createICSEvent(prayer.date, prayerName, time),
+    "END:VCALENDAR",
+  ].join("\n");
+
+  const blob = new Blob([icsContent], { type: "text/calendar;charset=utf-8" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = `${prayerName}-prayer-${prayer.date}.ics`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
+const createMonthlyICS = (times: timetable.PrayerTimes[]) => {
+  const events = times.flatMap((prayer) => [
+    createICSEvent(prayer.date, "Fajr", prayer.fajr),
+    createICSEvent(prayer.date, "Dhuhr", prayer.dhuhrJamat),
+    createICSEvent(prayer.date, "Asr", prayer.asrJamat),
+    createICSEvent(prayer.date, "Maghrib", prayer.maghrib),
+    createICSEvent(prayer.date, "Isha", prayer.ishaJamat),
+  ]);
+
+  const icsContent = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "CALSCALE:GREGORIAN",
+    "METHOD:PUBLISH",
+    ...events,
+    "END:VCALENDAR",
+  ].join("\n");
+
+  const blob = new Blob([icsContent], { type: "text/calendar;charset=utf-8" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  const month = new Date(times[0].date).toLocaleString("default", {
+    month: "long",
+  });
+  const year = new Date(times[0].date).getFullYear();
+  link.download = `prayer-times-${month}-${year}.ics`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
 
 // Function to format date
 const formatDate = (date: string) => {
@@ -71,39 +166,97 @@ const TableRow = ({ time }: { time: timetable.PrayerTimes }) => (
 
 // Prayer Times Table Component
 
-// Update the PrayerTimesTable component
-const PrayerTimesTable = ({ times }: { times: timetable.PrayerTimes[] }) => (
-  <div className="mb-8">
-    <div className="text-center text-4xl font-bold text-[#fd116f] mb-4">
-      Prayer times for {times[0].location?.name ?? "Unknown location"}
-    </div>
-    <table className="table-auto max-w-4xl w-full text-center mx-auto border border-[#fdbd03]/20">
-      <TableHeader />
-      <tbody className="divide-y divide-[#fdbd03]/20">
-        {processTimesData(times).map((time) => (
-          <TableRow key={time.id} time={time} />
+const PrayerTimesTable = ({ times }: { times: timetable.PrayerTimes[] }) => {
+  // Group times by month
+  const timesByMonth = times.reduce(
+    (acc, time) => {
+      const monthYear = new Date(time.date).toLocaleString("default", {
+        month: "long",
+        year: "numeric",
+      });
+      if (!acc[monthYear]) {
+        acc[monthYear] = [];
+      }
+      acc[monthYear].push(time);
+      return acc;
+    },
+    {} as Record<string, timetable.PrayerTimes[]>,
+  );
+
+  return (
+    <div className="mb-8">
+      <div className="text-center text-4xl font-bold text-[#fd116f] mb-4">
+        Prayer times for {times[0].location?.name ?? "Unknown location"}
+      </div>
+
+      {/* Month buttons */}
+      <div className="flex gap-2 justify-center mb-4 flex-wrap">
+        {Object.entries(timesByMonth).map(([monthYear, monthTimes]) => (
+          <button
+            key={monthYear}
+            onClick={() => createMonthlyICS(monthTimes)}
+            className="bg-[#fd116f] text-white px-4 py-2 rounded-lg hover:bg-[#fd116f]/90 flex items-center gap-2 transition-colors"
+          >
+            <span>📅</span>
+            <span>Download {monthYear} Calendar</span>
+          </button>
         ))}
-      </tbody>
-    </table>
-  </div>
-);
+      </div>
+
+      <table className="table-auto max-w-4xl w-full text-center mx-auto border border-[#fdbd03]/20">
+        <TableHeader />
+        <tbody className="divide-y divide-[#fdbd03]/20">
+          {processTimesData(times).map((time) => (
+            <TableRow key={time.id} time={time} />
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
 
 // Main Page Component
-export default async function Home() {
-  const times = await client.timetable.prayerTimesList();
+export default function Home() {
+  const [times, setTimes] = useState<timetable.PrayerTimes[]>([]);
+  const [error, setError] = useState(false);
 
-  if (times.success === false) {
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await client.timetable.prayerTimesList();
+        if (response.success) {
+          setTimes(response.result);
+        } else {
+          setError(true);
+        }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (error) {
+        setError(true);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (error) {
     return <div>Error</div>;
   }
 
+  if (times.length === 0) {
+    return <div>Loading...</div>;
+  }
+
   // group times by location
-  const timesByLocation = times.result.reduce((acc, time) => {
-    if (!acc[time.locationId]) {
-      acc[time.locationId] = [];
-    }
-    acc[time.locationId].push(time);
-    return acc;
-  }, {} as Record<number, timetable.PrayerTimes[]>);
+  const timesByLocation = times.reduce(
+    (acc, time) => {
+      if (!acc[time.locationId]) {
+        acc[time.locationId] = [];
+      }
+      acc[time.locationId].push(time);
+      return acc;
+    },
+    {} as Record<number, timetable.PrayerTimes[]>,
+  );
 
   return (
     <main>
