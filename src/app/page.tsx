@@ -259,7 +259,7 @@ export default function Home() {
   );
 
   return (
-    <main>
+    <main className="mt-2">
       <div>
         {Object.keys(timesByLocation).map((locationId) => {
           const id = Number(locationId);
