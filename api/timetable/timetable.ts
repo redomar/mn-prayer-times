@@ -174,7 +174,7 @@ export const collectFromBirmingham = api(
   }
 );
 
-async function fetchManchesterPrayerTimes(month, year) {
+async function fetchManchesterPrayerTimes(month: string, year: string) {
   const fetchData = async () => {
     const options = {
       method: "POST",
@@ -231,7 +231,7 @@ async function fetchManchesterPrayerTimes(month, year) {
   };
 
   return trArray
-    .map((tr): Partial<PrayerTimes> => {
+    .map((tr) => {
       const tdMatch = tr.match(/<td[\s\S]*?<\/td>/g);
       if (!tdMatch) {
         throw new APIError(ErrCode.Internal, "Failed to parse table cells");
@@ -239,7 +239,7 @@ async function fetchManchesterPrayerTimes(month, year) {
       return tdMatch.map((td) => td.replace(regex, ""));
     })
     .filter((td) => parseInt(td[0]) > 0)
-    .map((tdArray) => {
+    .map((tdArray): Partial<PrayerTimes> => {
       return {
         locationId: 3,
         date: parseDate(`${tdArray[0]} ${month} ${year}`),
