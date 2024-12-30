@@ -92,3 +92,32 @@ export const prayerTimesList = api(
     };
   }
 );
+
+export const prayerTimesListByLocation = api(
+  { expose: true, method: "GET", path: "/times/:locationId" },
+  async (p: { locationId: Location["id"] }): Promise<{ success: boolean; result: PrayerTimes[] }> => {
+    const locationsPrayerTimes = await db
+      .select()
+      .from(prayerTimes)
+      .where(eq(prayerTimes.locationId, p.locationId))
+      .innerJoin(locations, eq(locations.id, prayerTimes.locationId));
+
+    const response = locationsPrayerTimes.map((record) => {
+      return {
+        ...record.prayer_times, // properties from the prayer_times table
+        location: {
+          id: record.locations.id,
+          name: record.locations.name,
+          code: record.locations.code,
+          description: record.locations.description,
+        },
+        locationId: record.prayer_times.locationId ?? 0, // ensure locationId is a number
+      };
+    }) as PrayerTimes[];
+
+    return {
+      success: true,
+      result: response,
+    };
+  }
+);
