@@ -29,7 +29,7 @@ export const locationCreate = api(
  */
 export const locationFind = api(
   { expose: true, method: "GET", path: "/locations/find" },
-  async () => {
+  async (): Promise<{ success: boolean; result: Location[] }> => {
     const location = await db.select().from(locations);
     return {
       success: true,

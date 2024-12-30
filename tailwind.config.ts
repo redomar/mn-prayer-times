@@ -14,5 +14,13 @@ export default {
       },
     },
   },
+  safelist: [
+    "bg-[#fdbd03]",
+    "bg-gray-200/50",
+    "text-gray-500",
+    "bg-[#fd116f]",
+    "even:bg-black/5",
+    "odd:bg-black/10",
+  ],
   plugins: [],
 } satisfies Config;
