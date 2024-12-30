@@ -154,7 +154,7 @@ const TableHeader = () => (
 // Table Row Component
 const TableRow = ({ time }: { time: timetable.PrayerTimes }) => (
   <tr key={time.id} className={getRowClassName(time.date)}>
-    <td className="font-mono">{formatDate(time.date)}</td>
+    <td className="w-full font-mono text-sm min-w-48">{formatDate(time.date)}</td>
     <td>{time.fajr}</td>
     <td>{time.fajrJamat}</td>
     <td>{time.dhuhrJamat}</td>
@@ -184,13 +184,13 @@ const PrayerTimesTable = ({ times }: { times: timetable.PrayerTimes[] }) => {
   );
 
   return (
-    <div className="mb-8">
-      <div className="text-center text-4xl font-bold text-[#fd116f] mb-4">
+    <div className="mx-auto mb-8 max-w-xl">
+      <div className="mb-4 min-h-20 text-center text-4xl font-bold text-[#fd116f]">
         Prayer times for {times[0].location?.name ?? "Unknown location"}
       </div>
 
       {/* Month buttons */}
-      <div className="flex gap-2 justify-center mb-4 flex-wrap">
+      <div className="mb-4 flex flex-wrap justify-center gap-2">
         {Object.entries(timesByMonth).map(([monthYear, monthTimes]) => (
           <button
             key={monthYear}
@@ -203,7 +203,7 @@ const PrayerTimesTable = ({ times }: { times: timetable.PrayerTimes[] }) => {
         ))}
       </div>
 
-      <table className="table-auto max-w-4xl w-full text-center mx-auto border border-[#fdbd03]/20">
+      <table className="table-auto border border-[#fdbd03]/20 text-center">
         <TableHeader />
         <tbody className="divide-y divide-[#fdbd03]/20">
           {processTimesData(times).map((time) => (
@@ -260,7 +260,8 @@ export default function Home() {
 
   return (
     <main className="mt-2">
-      <div>
+      {/* <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3"> */}
+      <div className="w-full"> 
         {Object.keys(timesByLocation).map((locationId) => {
           const id = Number(locationId);
           return <PrayerTimesTable key={id} times={timesByLocation[id]} />;
