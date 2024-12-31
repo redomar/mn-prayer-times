@@ -6,7 +6,7 @@ export interface Location {
   id: number;
   name: string;
   code: string;
-  description: string;
+  description: string | null;
 }
 
 export const locationCreate = api(
