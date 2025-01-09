@@ -1,63 +1,54 @@
-"use client";
-import { Environment, timetable } from "../client";
-import Client from "../client";
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+// src/app/[slug]/page.tsx (Server Component, no "use client")
+
+import Client, { Environment, Local, timetable } from "../client";
 import Link from "next/link";
 import { PrayerTimesTable } from "@/components/PrayerTimesTable";
+import { beforeNowAndSorted } from "@/utils/before";
 
-const client = new Client(Environment("staging"));
+// Make sure to declare your revalidate
+export const revalidate = 3600;
 
-const Page = () => {
-  const { slug } = useParams();
-  const [times, setTimes] = useState<timetable.PrayerTimes[]>([]);
-  const [error, setError] = useState(false);
+// Reusable function in server land:
+async function getTimes(slug: string) {
+  // We create the client in here or above.
+  // Use process.env to decide which environment to use.
+  const target = process.env.NEXT_PUBLIC_ENVIRONMENT ?? "local";
+  const client = new Client(
+    target === "local" ? Local : Environment("staging"),
+  );
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // First get the location data
-        const locationResponse = await client.timetable.locationFind();
-        if (!locationResponse.success) {
-          setError(true);
-          return;
-        }
+  // Then call your `prayerTimesListByLocation`:
+  const locationsResponse = await client.timetable.locationFind();
+  if (!locationsResponse.success) throw new Error("Failed to fetch locations");
 
-        const locationData = locationResponse.result.find(
-          (loc) =>
-            loc.name.toLowerCase() ===
-            (Array.isArray(slug) ? slug[0].toLowerCase() : slug?.toLowerCase())
-        );
+  const locationData = locationsResponse.result.find(
+    (loc) => loc.name.toLowerCase() === slug,
+  );
+  if (!locationData) throw new Error(`Cannot find location ${slug}`);
 
-        if (!locationData) {
-          console.log(locationResponse.result);
-          setError(true);
-          return;
-        }
+  const response = await client.timetable.prayerTimesListByLocation(
+    locationData.id,
+  );
+  if (!response.success) throw new Error("Failed to fetch prayer times");
 
-        // Then get the prayer times for this location
-        const response = await client.timetable.prayerTimesListByLocation(
-          locationData.id
-        );
-        if (response.success) {
-          setTimes(response?.result);
-        } else {
-          setError(true);
-        }
-      } catch {
-        setError(true);
-      }
-    };
+  return response.result;
+}
+export default async function Page(props: {
+  params: Promise<{ slug: string }>;
+}) {
+  const params = await props.params;
+  if (!params.slug) throw new Error("No slug provided");
 
-    if (slug) {
-      fetchData();
-    }
-  }, [slug]);
-
-  if (error) {
+  let upcomingTimes: timetable.PrayerTimes[];
+  try {
+    const times = await getTimes(params.slug.toLowerCase());
+    upcomingTimes = beforeNowAndSorted(times, new Date());
+  } catch (error) {
+    console.error(error);
     return <div>Error loading data</div>;
   }
 
+  // After data is fetched on server, we can pass it to a client component if needed:
   return (
     <main className="mt-2">
       <div className="w-full">
@@ -66,10 +57,8 @@ const Page = () => {
             Back Home
           </button>
         </Link>
-        <PrayerTimesTable times={times} />
+        <PrayerTimesTable times={upcomingTimes} />
       </div>
     </main>
   );
-};
-
-export default Page;
+}
