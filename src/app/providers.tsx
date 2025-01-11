@@ -13,12 +13,10 @@ export function PostHogProvider({ children }: { children: React.ReactNode }) {
     posthog.init(KEY, {
       api_host: "/ingest",
       ui_host: 'https://eu.posthog.com',
-      capture_pageview: true, // Disable automatic pageview capture, as we capture manually
+      capture_pageview: false, // Disable automatic pageview capture, as we capture manually
       person_profiles: "always", // Enables capturing of person profiles
     });
   }, [KEY, HOST]);
-
-  console.log("PostHogProvider, KEY:", KEY);
 
   return (
     <PHProvider client={posthog}>
