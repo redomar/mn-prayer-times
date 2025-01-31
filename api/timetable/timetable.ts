@@ -82,33 +82,57 @@ export const collectFromLondon = api(
   }
 );
 
-async function fetchBirminghamPrayerTimes() {
-  const url = "https://centralmosque.org.uk/timetable/";
-  const response = await fetch(url);
-  const data = await response.text();
+async function fetchBirminghamPrayerTimes(month: string, year: string) {
+  const options = {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      action: "fulltabledata",
+      year: year,
+      month: month,
+    }),
+  };
 
-  const regex = /(&nbsp;|<([^>]+)>)/gi;
-  const match = data.match(/<tbody>(.|\n)*<\/tbody>/);
-  if (!match) {
+  const response = await fetch(
+    "https://centralmosque.org.uk/wp-admin/admin-ajax.php",
+    options
+  );
+
+  if (!response.ok) {
     throw new APIError(
       ErrCode.Internal,
-      "Failed to find tbody in the response"
+      `Failed to fetch prayer times: ${response.statusText}`
     );
   }
 
-  const table = match[0];
-  const trArray = table.match(/<tr[\s\S]*?<\/tr>/g);
+  const data = await response.text();
+  const regex = /(&nbsp;|<([^>]+)>)/gi;
+  const match = data.match(/<tr[\s\S]*?<\/tr>/g);
 
-  if (!trArray) {
+  if (!match) {
     throw new APIError(ErrCode.Internal, "Failed to parse table rows");
   }
 
   const parseTime = (time: string): string => {
-    return new Date(`2000-01-01 ${time}`).toLocaleTimeString("en-GB", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    });
+    if (!time) return "";
+    // Remove any spaces and convert to uppercase
+    time = time.replace(/\s/g, "").toUpperCase();
+
+    // Extract hours, minutes and period
+    const matches = time.match(/(\d+):?(\d+)?(AM|PM)/);
+    if (!matches) return "";
+
+    const [, hours, minutes, period] = matches;
+    let hr = parseInt(hours);
+    const min = minutes ? parseInt(minutes) : 0;
+
+    // Convert to 24-hour format
+    if (period === "PM" && hr < 12) hr += 12;
+    if (period === "AM" && hr === 12) hr = 0;
+
+    return `${hr.toString().padStart(2, "0")}:${min
+      .toString()
+      .padStart(2, "0")}`;
   };
 
   const parseDate = (date: string): string => {
@@ -116,14 +140,13 @@ async function fetchBirminghamPrayerTimes() {
     return new Date(cleanedDate).toISOString().split("T")[0] ?? "";
   };
 
-  return trArray.map((tr): Partial<PrayerTimes> => {
+  return match.map((tr): Partial<PrayerTimes> => {
     const tdMatch = tr.match(/<td[\s\S]*?<\/td>/g);
     if (!tdMatch) {
       throw new APIError(ErrCode.Internal, "Failed to parse table cells");
     }
-    const tdArray = tdMatch.map((td) => td.replace(regex, ""));
+    const tdArray = tdMatch.map((td) => td.replace(regex, "").trim());
 
-    // Using null coalescing to provide default values for missing fields
     return {
       locationId: 2,
       date: parseDate(tdArray[0]),
@@ -136,7 +159,7 @@ async function fetchBirminghamPrayerTimes() {
       asr2: parseTime(tdArray[8]),
       asrJamat: parseTime(tdArray[9]),
       maghrib: parseTime(tdArray[10]),
-      maghribJamat: parseTime(tdArray[10]), // Using maghrib time as jamat time if not provided
+      maghribJamat: parseTime(tdArray[11]),
       isha: parseTime(tdArray[12]),
       ishaJamat: parseTime(tdArray[13]),
     };
@@ -144,11 +167,13 @@ async function fetchBirminghamPrayerTimes() {
 }
 
 export const collectFromBirmingham = api(
-  { method: "GET", path: "/birmingham" },
-  async () => {
+  { method: "GET", path: "/birmingham/:year/:month" },
+  async (p: { year: string; month: string }) => {
     try {
-      const birminghamPrayerTimes =
-        (await fetchBirminghamPrayerTimes()) as PrayerTimes[];
+      const birminghamPrayerTimes = (await fetchBirminghamPrayerTimes(
+        p.month,
+        p.year
+      )) as PrayerTimes[];
 
       const savedPrayerTimes = await db
         .insert(prayerTimes)
