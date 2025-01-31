@@ -199,6 +199,39 @@ export const collectFromBirmingham = api(
   }
 );
 
+export const collectFromBirminghamMonthly = api(
+  { method: "GET", path: "/birmingham" },
+  async () => {
+    try {
+      const birminghamPrayerTimes = (await fetchBirminghamPrayerTimes(
+        new Date().toLocaleString('en-GB', { month: 'long' }),
+        new Date().getFullYear().toString()
+      )) as PrayerTimes[];
+
+      const savedPrayerTimes = await db
+        .insert(prayerTimes)
+        .values(birminghamPrayerTimes)
+        .returning();
+
+      return {
+        status: ErrCode.OK,
+        body: savedPrayerTimes,
+      };
+    } catch (error) {
+      if (error instanceof APIError) {
+        return {
+          status: error.code,
+          error: error.message,
+        };
+      }
+      return {
+        status: 500,
+        error,
+      };
+    }
+  }
+);
+
 async function fetchManchesterPrayerTimes(month: string, year: string) {
   const fetchData = async () => {
     const options = {
