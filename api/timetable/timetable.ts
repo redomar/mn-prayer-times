@@ -137,7 +137,10 @@ async function fetchBirminghamPrayerTimes(month: string, year: string) {
 
   const parseDate = (date: string): string => {
     const cleanedDate = date.replace(/\b(\d+)(st|nd|rd|th)\b/, "$1");
-    return new Date(cleanedDate).toISOString().split("T")[0] ?? "";
+    // Using the 14:00 hour to mitigate daylight savings time issues
+    return (
+      new Date(cleanedDate + " 14:00:00").toISOString().split("T")[0] ?? ""
+    );
   };
 
   return match.map((tr): Partial<PrayerTimes> => {
@@ -204,7 +207,7 @@ export const collectFromBirminghamMonthly = api(
   async () => {
     try {
       const birminghamPrayerTimes = (await fetchBirminghamPrayerTimes(
-        new Date().toLocaleString('en-GB', { month: 'long' }),
+        new Date().toLocaleString("en-GB", { month: "long" }),
         new Date().getFullYear().toString()
       )) as PrayerTimes[];
 
