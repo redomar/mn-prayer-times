@@ -4,6 +4,7 @@ import Client, { Environment, Local, timetable } from "../client";
 import Link from "next/link";
 import { PrayerTimesTable } from "@/components/PrayerTimesTable";
 import { beforeNowAndSorted } from "@/utils/before";
+import { PrayerCountdown } from "@/components/PrayerCountdown";
 
 // Make sure to declare your revalidate
 export const revalidate = 3600;
@@ -40,9 +41,12 @@ export default async function Page(props: {
   if (!params.slug) throw new Error("No slug provided");
 
   let upcomingTimes: timetable.PrayerTimes[];
+  let today: timetable.PrayerTimes;
   try {
     const times = await getTimes(params.slug.toLowerCase());
     upcomingTimes = beforeNowAndSorted(times, new Date());
+    today = upcomingTimes[0];
+    console.log(today);
   } catch (error) {
     console.error(error);
     return <div>Error loading data</div>;
@@ -57,6 +61,7 @@ export default async function Page(props: {
             Back Home
           </button>
         </Link>
+        {today && <PrayerCountdown today={today} />}
         <PrayerTimesTable times={upcomingTimes} />
       </div>
     </main>
