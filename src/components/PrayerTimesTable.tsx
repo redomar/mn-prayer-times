@@ -31,13 +31,13 @@ export function PrayerTimesTable({
     timesByMonth[key].push(t);
   }
 
+  // In PrayerTimesTable.tsx
   return (
-    <div className="m-8 max-w-3xl mx-auto">
+    <div className="max-w-7xl mx-auto px-4"> {/* increased from max-w-3xl */}
       <div className="mb-4 min-h-20 text-center text-4xl font-bold text-[#fd116f]">
-        Prayer times for {times[0]?.location?.name ?? "Unknown location"}
+        Prayer times for <span className="text-[#fdbd03] mt-10">{times[0]?.location?.name ?? "Unknown location"}</span>
       </div>
-
-      {/* We are still server-rendering all text, but we import a Client Component for the button */}
+  
       <div className="mb-4 flex flex-wrap justify-center gap-2">
         {Object.entries(timesByMonth).map(([monthYear, monthTimes]) => (
           <DownloadCalendarButton
@@ -47,8 +47,8 @@ export function PrayerTimesTable({
           />
         ))}
       </div>
-
-      <table className="table-auto border border-[#fdbd03]/20 text-center">
+  
+      <table className="w-full table-auto border-2 border-[#fdbd03] text-center"> {/* made table full width and border yellow */}
         <TableHeader />
         <tbody className="divide-y divide-[#fdbd03]/20">
           {times.map((time) => (
