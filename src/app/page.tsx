@@ -10,7 +10,7 @@ export const revalidate = 3600;
 async function getHomeData() {
   const target = process.env.NEXT_PUBLIC_ENVIRONMENT ?? "local";
   const client = new Client(
-    target === "local" ? Local : Environment("staging"),
+    target === "local" ? Local : Environment("staging")
   );
 
   // Get locations
@@ -43,14 +43,16 @@ export default async function Home() {
   }
 
   return (
-    <main className="mt-2">
-      <div className="relative m-4">
-        <h1>Other Locations</h1>
-        <ul className="flex space-x-4">
+    <main className="mt-2 bg-gradient-to-b from-indigo-950 to-purple-900 min-h-screen text-amber-50">
+      <div className="relative m-4 p-4">
+        <h1 className="text-2xl font-medium text-amber-300 mb-4">
+          Prayer Locations
+        </h1>
+        <ul className="flex flex-wrap gap-4">
           {data.locations.map((location) => (
             <li key={location.id} className="mb-2">
               <Link href={`/${location.name.toLowerCase()}`}>
-                <button className="bg-[#fd116f] text-white py-2 px-4 rounded">
+                <button className="bg-amber-500 hover:bg-amber-600 text-indigo-950 py-2 px-4 rounded transition-colors font-medium shadow-md">
                   {location.name}
                 </button>
               </Link>

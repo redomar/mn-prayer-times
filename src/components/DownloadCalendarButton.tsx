@@ -1,7 +1,8 @@
-"use client"; // This file is a Client Component so we can have onClick
+"use client";
 
 import { timetable } from "@/app/client";
 import { createMonthlyICS } from "../utils/calendar";
+import { Calendar } from "lucide-react";
 
 export default function DownloadCalendarButton({
   monthYear,
@@ -18,10 +19,10 @@ export default function DownloadCalendarButton({
   return (
     <button
       onClick={handleDownload}
-      className="bg-[#fd116f] text-white px-4 py-2 rounded-lg hover:bg-[#fd116f]/90 flex items-center gap-2 transition-colors"
+      className="bg-gradient-to-r from-amber-500 to-amber-600 text-indigo-950 px-4 py-2 rounded-lg hover:from-amber-600 hover:to-amber-700 flex items-center gap-2 transition-all font-medium shadow-md"
     >
-      <span>📅</span>
-      <span>Download {monthYear} Calendar</span>
+      <Calendar className="w-5 h-5" />
+      <span>Download {monthYear}</span>
     </button>
   );
 }

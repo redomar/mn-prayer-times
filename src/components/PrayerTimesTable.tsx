@@ -20,7 +20,7 @@ export function PrayerTimesTable({
   times: timetable.PrayerTimes[];
 }) {
   if (times.length === 0) {
-    return <div className="m-8 max-w-3xl mx-auto">No data</div>;
+    return <div className="m-8 max-w-3xl mx-auto text-amber-200">No data</div>;
   }
 
   // Group them by month-year on the *server*
@@ -31,13 +31,15 @@ export function PrayerTimesTable({
     timesByMonth[key].push(t);
   }
 
-  // In PrayerTimesTable.tsx
   return (
-    <div className="max-w-7xl mx-auto px-4"> {/* increased from max-w-3xl */}
-      <div className="mb-4 min-h-20 text-center text-4xl font-bold text-[#fd116f]">
-        Prayer times for <span className="text-[#fdbd03] mt-10">{times[0]?.location?.name ?? "Unknown location"}</span>
+    <div className="max-w-7xl mx-auto px-4">
+      <div className="mb-4 min-h-20 text-center text-4xl font-bold text-amber-300">
+        Prayer times for{" "}
+        <span className="text-amber-500 mt-10">
+          {times[0]?.location?.name ?? "Unknown location"}
+        </span>
       </div>
-  
+
       <div className="mb-4 flex flex-wrap justify-center gap-2">
         {Object.entries(timesByMonth).map(([monthYear, monthTimes]) => (
           <DownloadCalendarButton
@@ -47,10 +49,10 @@ export function PrayerTimesTable({
           />
         ))}
       </div>
-  
-      <table className="w-full table-auto border-2 border-[#fdbd03] text-center"> {/* made table full width and border yellow */}
+
+      <table className="w-full table-auto border-2 border-amber-400 text-center shadow-lg bg-indigo-950/40 rounded-lg overflow-hidden">
         <TableHeader />
-        <tbody className="divide-y divide-[#fdbd03]/20">
+        <tbody className="divide-y divide-amber-400/20 text-amber-50">
           {times.map((time) => (
             <TableRow key={time.id} time={time} />
           ))}
