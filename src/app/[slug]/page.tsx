@@ -59,7 +59,8 @@ export default async function Page(props: {
     <main className="bg-gradient-to-b from-indigo-950 to-purple-900 min-h-screen text-amber-50">
       <div className="w-full p-8">
         <Link href="/">
-          <button className="bg-amber-500 hover:bg-amber-600 text-indigo-950 py-2 px-4 rounded mb-4 transition-colors font-medium">
+          {/* Updated button styling */}
+          <button className="border border-amber-400 hover:bg-amber-400 hover:text-indigo-950 text-amber-400 py-2 px-4 rounded mb-4 transition-colors font-medium">
             Back Home
           </button>
         </Link>

@@ -52,7 +52,7 @@ export default async function Home() {
           {data.locations.map((location) => (
             <li key={location.id} className="mb-2">
               <Link href={`/${location.name.toLowerCase()}`}>
-                <button className="bg-amber-500 hover:bg-amber-600 text-indigo-950 py-2 px-4 rounded transition-colors font-medium shadow-md">
+                <button className="border border-amber-400 hover:bg-amber-400 hover:text-indigo-950 text-amber-400 py-2 px-4 rounded transition-colors font-medium shadow-md">
                   {location.name}
                 </button>
               </Link>
