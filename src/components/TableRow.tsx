@@ -1,5 +1,5 @@
 import { timetable } from "@/app/client";
-import { getRowClassName, formatDate } from "../utils/dates";
+import { formatDate } from "../utils/dates";
 
 export const TableRow = ({ time }: { time: timetable.PrayerTimes }) => {
   const isToday =

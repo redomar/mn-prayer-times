@@ -118,7 +118,9 @@ export function PrayerCountdown({
       <div className="flex justify-between items-center mb-6 bg-gradient-to-r from-indigo-900 to-purple-900 p-4 rounded-lg shadow-lg border border-amber-400/20">
         <div className="flex items-center gap-2">
           <MoonStar className="w-7 h-7 text-amber-300" />
-          <h1 className="text-2xl font-bold text-amber-100">Prayer Times {locationName && "for " + locationName}</h1>
+          <h1 className="text-2xl font-bold text-amber-100">
+            Prayer Times {locationName && "for " + locationName}
+          </h1>
         </div>
         <button
           onClick={toggleMenu}
@@ -232,7 +234,7 @@ export function PrayerCountdown({
       {/* Prayer Times Grid */}
       <h3 className="text-xl font-medium text-amber-200 mb-4 flex items-center">
         <Clock className="w-5 h-5 mr-2" />
-        Today's Prayer Schedule
+        Today&apos;s Prayer Schedule
       </h3>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
