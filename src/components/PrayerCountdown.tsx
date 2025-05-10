@@ -71,9 +71,11 @@ function getTimeUntil(timeString: string): string {
 export function PrayerCountdown({
   today,
   locations = [],
+  locationName = "",
 }: {
   today: timetable.PrayerTimes;
   locations?: { id: number; name: string }[];
+  locationName?: string;
 }) {
   const [isLoading, setIsLoading] = useState(true);
   const [timeUntil, setTimeUntil] = useState("00:00:00");
@@ -116,7 +118,7 @@ export function PrayerCountdown({
       <div className="flex justify-between items-center mb-6 bg-gradient-to-r from-indigo-900 to-purple-900 p-4 rounded-lg shadow-lg border border-amber-400/20">
         <div className="flex items-center gap-2">
           <MoonStar className="w-7 h-7 text-amber-300" />
-          <h1 className="text-2xl font-bold text-amber-100">Prayer Times</h1>
+          <h1 className="text-2xl font-bold text-amber-100">Prayer Times {locationName && "for " + locationName}</h1>
         </div>
         <button
           onClick={toggleMenu}

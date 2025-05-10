@@ -42,10 +42,12 @@ export default async function Page(props: {
 
   let upcomingTimes: timetable.PrayerTimes[];
   let today: timetable.PrayerTimes;
+  let locationName: string;
   try {
     const times = await getTimes(params.slug.toLowerCase());
     upcomingTimes = beforeNowAndSorted(times, new Date());
     today = upcomingTimes[0];
+    locationName = today.location?.name ?? "Unknown location";
     console.log(today);
   } catch (error) {
     console.error(error);
@@ -54,14 +56,14 @@ export default async function Page(props: {
 
   // After data is fetched on server, we can pass it to a client component if needed:
   return (
-    <main className="mt-2 bg-gradient-to-b from-indigo-950 to-purple-900 min-h-screen text-amber-50">
-      <div className="w-full p-4">
+    <main className="bg-gradient-to-b from-indigo-950 to-purple-900 min-h-screen text-amber-50">
+      <div className="w-full p-8">
         <Link href="/">
           <button className="bg-amber-500 hover:bg-amber-600 text-indigo-950 py-2 px-4 rounded mb-4 transition-colors font-medium">
             Back Home
           </button>
         </Link>
-        {today && <PrayerCountdown today={today} />}
+        {today && <PrayerCountdown today={today} locationName={locationName} />}
         <PrayerTimesTable times={upcomingTimes} />
       </div>
     </main>

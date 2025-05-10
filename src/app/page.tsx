@@ -43,8 +43,8 @@ export default async function Home() {
   }
 
   return (
-    <main className="mt-2 bg-gradient-to-b from-indigo-950 to-purple-900 min-h-screen text-amber-50">
-      <div className="relative m-4 p-4">
+    <main className="bg-gradient-to-b from-indigo-950 to-purple-900 min-h-screen text-amber-50">
+      <div className="relative p-8">
         <h1 className="text-2xl font-medium text-amber-300 mb-4">
           Prayer Locations
         </h1>
