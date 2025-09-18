@@ -115,7 +115,7 @@ export function PrayerCountdown({
   return (
     <div className="max-w-7xl mx-auto px-4 py-4">
       {/* Navigation Header */}
-      <div className="flex justify-between items-center mb-6 bg-gradient-to-r from-indigo-900 to-purple-900 p-4 rounded-lg shadow-lg border border-amber-400/20">
+      <div className="flex justify-between items-center mb-6 bg-linear-to-r from-indigo-900 to-purple-900 p-4 rounded-lg shadow-lg border border-amber-400/20">
         <div className="flex items-center gap-2">
           <MoonStar className="w-7 h-7 text-amber-300" />
           <h1 className="text-2xl font-bold text-amber-100">
@@ -144,7 +144,7 @@ export function PrayerCountdown({
           className="absolute inset-0 bg-black/50"
           onClick={toggleMenu}
         ></div>
-        <div className="absolute right-0 top-0 bottom-0 w-64 bg-gradient-to-b from-indigo-950 to-purple-900 p-6 shadow-xl">
+        <div className="absolute right-0 top-0 bottom-0 w-64 bg-linear-to-b from-indigo-950 to-purple-900 p-6 shadow-xl">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-bold text-amber-300">Menu</h2>
             <button
@@ -210,7 +210,7 @@ export function PrayerCountdown({
       </div>
 
       {/* Next Prayer Countdown */}
-      <div className="bg-gradient-to-r from-purple-800 to-indigo-900 text-amber-50 p-8 sm:p-10 rounded-xl mb-8 text-center border-2 border-amber-400/70 shadow-lg">
+      <div className="bg-linear-to-r from-purple-800 to-indigo-900 text-amber-50 p-8 sm:p-10 rounded-xl mb-8 text-center border-2 border-amber-400/70 shadow-lg">
         <h2 className="text-2xl sm:text-3xl mb-4 font-semibold">
           Next Prayer: <span className="text-amber-300">{nextPrayer.name}</span>
         </h2>
@@ -238,7 +238,7 @@ export function PrayerCountdown({
       </h3>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-        <div className="bg-gradient-to-br from-purple-800 to-indigo-900 text-amber-50 p-4 rounded-lg text-center border border-purple-700 hover:border-amber-400 transition-all shadow-md">
+        <div className="bg-linear-to-br from-purple-800 to-indigo-900 text-amber-50 p-4 rounded-lg text-center border border-purple-700 hover:border-amber-400 transition-all shadow-md">
           <Moon className="w-8 h-8 mx-auto mb-3 text-amber-300" />
           <div className="font-bold text-lg mb-1">Fajr</div>
           <div className="text-xl text-amber-200 mb-1">{today.fajr}</div>
@@ -247,7 +247,7 @@ export function PrayerCountdown({
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-purple-800 to-indigo-900 text-amber-50 p-4 rounded-lg text-center border border-purple-700 hover:border-amber-400 transition-all shadow-md">
+        <div className="bg-linear-to-br from-purple-800 to-indigo-900 text-amber-50 p-4 rounded-lg text-center border border-purple-700 hover:border-amber-400 transition-all shadow-md">
           <Sunrise className="w-8 h-8 mx-auto mb-3 text-amber-300" />
           <div className="font-bold text-lg mb-1">Sunrise</div>
           <div className="text-xl text-amber-200">{today.sunrise}</div>
@@ -255,7 +255,7 @@ export function PrayerCountdown({
         </div>
 
         {/* Repeat similar styling improvements for other prayers */}
-        <div className="bg-gradient-to-br from-purple-800 to-indigo-900 text-amber-50 p-4 rounded-lg text-center border border-purple-700 hover:border-amber-400 transition-all shadow-md">
+        <div className="bg-linear-to-br from-purple-800 to-indigo-900 text-amber-50 p-4 rounded-lg text-center border border-purple-700 hover:border-amber-400 transition-all shadow-md">
           <Sun className="w-8 h-8 mx-auto mb-3 text-amber-300" />
           <div className="font-bold text-lg mb-1">Dhuhr</div>
           <div className="text-xl text-amber-200 mb-1">{today.dhuhr}</div>
@@ -264,7 +264,7 @@ export function PrayerCountdown({
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-purple-800 to-indigo-900 text-amber-50 p-4 rounded-lg text-center border border-purple-700 hover:border-amber-400 transition-all shadow-md">
+        <div className="bg-linear-to-br from-purple-800 to-indigo-900 text-amber-50 p-4 rounded-lg text-center border border-purple-700 hover:border-amber-400 transition-all shadow-md">
           <CloudSun className="w-8 h-8 mx-auto mb-3 text-amber-300" />
           <div className="font-bold text-lg mb-1">Asr</div>
           <div className="text-xl text-amber-200 mb-1">{today.asr}</div>
@@ -273,7 +273,7 @@ export function PrayerCountdown({
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-purple-800 to-indigo-900 text-amber-50 p-4 rounded-lg text-center border border-purple-700 hover:border-amber-400 transition-all shadow-md">
+        <div className="bg-linear-to-br from-purple-800 to-indigo-900 text-amber-50 p-4 rounded-lg text-center border border-purple-700 hover:border-amber-400 transition-all shadow-md">
           <Sunrise className="w-8 h-8 mx-auto mb-3 rotate-180 text-amber-300" />
           <div className="font-bold text-lg mb-1">Maghrib</div>
           <div className="text-xl text-amber-200 mb-1">{today.maghrib}</div>
@@ -282,7 +282,7 @@ export function PrayerCountdown({
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-purple-800 to-indigo-900 text-amber-50 p-4 rounded-lg text-center border border-purple-700 hover:border-amber-400 transition-all shadow-md">
+        <div className="bg-linear-to-br from-purple-800 to-indigo-900 text-amber-50 p-4 rounded-lg text-center border border-purple-700 hover:border-amber-400 transition-all shadow-md">
           <Cloud className="w-8 h-8 mx-auto mb-3 text-amber-300" />
           <div className="font-bold text-lg mb-1">Isha</div>
           <div className="text-xl text-amber-200 mb-1">{today.isha}</div>

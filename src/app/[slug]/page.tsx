@@ -2,9 +2,11 @@
 
 import Client, { Environment, Local, timetable } from "../client";
 import Link from "next/link";
-import { PrayerTimesTable } from "@/components/PrayerTimesTable";
+import { PrayerTimesTableNew } from "@/components/PrayerTimesTableNew";
 import { beforeNowAndSorted } from "@/utils/before";
 import { PrayerCountdown } from "@/components/PrayerCountdown";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { Button } from "@/components/ui/button";
 
 // Make sure to declare your revalidate
 export const revalidate = 3600;
@@ -47,25 +49,28 @@ export default async function Page(props: {
     const times = await getTimes(params.slug.toLowerCase());
     upcomingTimes = beforeNowAndSorted(times, new Date());
     today = upcomingTimes[0];
-    locationName = today.location?.name ?? "Unknown location";
+    locationName = today?.location?.name ?? "Unknown location";
     console.log(today);
   } catch (error) {
     console.error(error);
     return <div>Error loading data</div>;
   }
 
-  // After data is fetched on server, we can pass it to a client component if needed:
   return (
-    <main className="bg-gradient-to-b from-indigo-950 to-purple-900 min-h-screen text-amber-50">
-      <div className="w-full p-8">
-        <Link href="/">
-          {/* Updated button styling */}
-          <button className="border border-amber-400 hover:bg-amber-400 hover:text-indigo-950 text-amber-400 py-2 px-4 rounded mb-4 transition-colors font-medium">
-            Back Home
-          </button>
-        </Link>
+    <main className="min-h-screen bg-background relative">
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-primary/5" />
+      <div className="relative z-10 w-full p-8 space-y-8">
+        <div className="flex justify-between items-center max-w-6xl mx-auto">
+          <Link href="/">
+            <Button variant="outline" className="glass hover:glass-strong transition-all duration-300">
+              ← Back Home
+            </Button>
+          </Link>
+          <ThemeToggle />
+        </div>
+
         {today && <PrayerCountdown today={today} locationName={locationName} />}
-        <PrayerTimesTable times={upcomingTimes} />
+        <PrayerTimesTableNew times={upcomingTimes} />
       </div>
     </main>
   );

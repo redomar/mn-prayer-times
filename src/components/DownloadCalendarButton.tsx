@@ -19,7 +19,7 @@ export default function DownloadCalendarButton({
   return (
     <button
       onClick={handleDownload}
-      className="bg-gradient-to-r from-amber-500 to-amber-600 text-indigo-950 px-4 py-2 rounded-lg hover:from-amber-600 hover:to-amber-700 flex items-center gap-2 transition-all font-medium shadow-md"
+      className="bg-linear-to-r from-amber-500 to-amber-600 text-indigo-950 px-4 py-2 rounded-lg hover:from-amber-600 hover:to-amber-700 flex items-center gap-2 transition-all font-medium shadow-md"
     >
       <Calendar className="w-5 h-5" />
       <span>Download {monthYear}</span>

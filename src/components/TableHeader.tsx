@@ -1,5 +1,5 @@
 export const TableHeader = () => (
-  <thead className="bg-gradient-to-r from-purple-900 to-indigo-900 text-amber-300">
+  <thead className="bg-linear-to-r from-purple-900 to-indigo-900 text-amber-300">
     <tr>
       <th className="px-4 py-3 font-medium">Date</th>
       <th className="px-4 py-3 font-medium">Fajr</th>
