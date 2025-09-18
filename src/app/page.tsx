@@ -1,13 +1,12 @@
 // src/app/page.tsx (Server Component, no "use client")
 
-import Client, { Environment, Local, timetable } from "./client";
-import { PrayerTimesTableNew } from "@/components/PrayerTimesTableNew";
 import { PrayerDashboard } from "@/components/PrayerDashboard";
-import { beforeNowAndSorted } from "@/utils/before";
-import Link from "next/link";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardTitle } from "@/components/ui/card";
+import { beforeNowAndSorted } from "@/utils/before";
+import Link from "next/link";
+import Client, { Environment, Local, timetable } from "./client";
 
 export const revalidate = 3600;
 
@@ -49,27 +48,24 @@ export default async function Home() {
   return (
     <main className="min-h-screen bg-background">
       <div className="w-full p-8 space-y-8 max-w-7xl mx-auto">
-
         {/* Header */}
         <div className="flex justify-between items-center">
-          <h1 className="text-3xl font-bold">Prayer Times</h1>
+          <h1 className="text-3xl font-bold">
+            {data.locations.length > 0 && data.locations[0].name} Prayer Times
+          </h1>
           <ThemeToggle />
         </div>
 
-        {/* Today's Dashboard */}
-        {upcomingTimes.length > 0 && (
-          <PrayerDashboard today={upcomingTimes[0]} />
-        )}
-
         {/* Location Selection */}
         <Card className="glass">
-          <CardHeader>
-            <CardTitle className="text-xl">Select Location</CardTitle>
-          </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mt-5">
+              <CardTitle className="text-xl">Select Location</CardTitle>
               {data.locations.map((location) => (
-                <Link key={location.id} href={`/${location.name.toLowerCase()}`}>
+                <Link
+                  key={location.id}
+                  href={`/${location.name.toLowerCase()}`}
+                >
                   <Button
                     variant="outline"
                     className="w-full glass hover:glass-strong hover:border-primary/50 transition-all duration-300"
@@ -82,8 +78,16 @@ export default async function Home() {
           </CardContent>
         </Card>
 
+        {/* Today's Dashboard */}
+        {upcomingTimes.length > 0 && (
+          <>
+            <p>{data.locations.length > 0 && data.locations[0].name} </p>
+            <PrayerDashboard today={upcomingTimes[0]} />
+          </>
+        )}
+
         {/* Monthly Table */}
-        <PrayerTimesTableNew times={upcomingTimes} />
+        {/* <PrayerTimesTableNew times={upcomingTimes} /> */}
       </div>
     </main>
   );
