@@ -3,8 +3,8 @@
 import Client, { Environment, Local, timetable } from "../client";
 import Link from "next/link";
 import { PrayerTimesTableNew } from "@/components/PrayerTimesTableNew";
+import { PrayerDashboard } from "@/components/PrayerDashboard";
 import { beforeNowAndSorted } from "@/utils/before";
-import { PrayerCountdown } from "@/components/PrayerCountdown";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/button";
 
@@ -57,19 +57,30 @@ export default async function Page(props: {
   }
 
   return (
-    <main className="min-h-screen bg-background relative">
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-primary/5" />
-      <div className="relative z-10 w-full p-8 space-y-8">
-        <div className="flex justify-between items-center max-w-6xl mx-auto">
-          <Link href="/">
-            <Button variant="outline" className="glass hover:glass-strong transition-all duration-300">
-              ← Back Home
-            </Button>
-          </Link>
+    <main className="min-h-screen bg-background">
+      <div className="w-full p-8 space-y-8 max-w-7xl mx-auto">
+
+        {/* Header */}
+        <div className="flex justify-between items-center">
+          <div className="flex items-center gap-4">
+            <Link href="/">
+              <Button variant="outline" className="glass hover:glass-strong transition-all duration-300">
+                ← Back
+              </Button>
+            </Link>
+            <h1 className="text-3xl font-bold">
+              {locationName}
+            </h1>
+          </div>
           <ThemeToggle />
         </div>
 
-        {today && <PrayerCountdown today={today} locationName={locationName} />}
+        {/* Dashboard */}
+        {today && (
+          <PrayerDashboard today={today} locationName={locationName} />
+        )}
+
+        {/* Monthly Table */}
         <PrayerTimesTableNew times={upcomingTimes} />
       </div>
     </main>

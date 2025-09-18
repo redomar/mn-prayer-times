@@ -150,10 +150,10 @@ export function PrayerTimesTableNew({ times }: PrayerTimesTableProps) {
 
   return (
     <div className="space-y-6 w-full max-w-6xl mx-auto">
-      <Card className="glass-strong">
+      <Card className="glass">
         <CardHeader className="text-center">
-          <CardTitle className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-            Prayer Times for {times[0]?.location?.name ?? "Unknown location"}
+          <CardTitle className="text-2xl font-bold">
+            Prayer Times - {times[0]?.location?.name ?? "Unknown location"}
           </CardTitle>
         </CardHeader>
       </Card>

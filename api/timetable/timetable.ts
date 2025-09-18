@@ -74,14 +74,16 @@ function extractAndCleanTableCells(rowHtml: string): string[] {
 }
 
 /**
- * Gets the current date's long month name, short month name, numeric year, and string year.
- * @returns An object containing longMonth, shortMonth, numericYear, and year (string).
+ * Gets the current date's long month name, short month name, 3-char month name, numeric year, and string year.
+ * @returns An object containing longMonth, shortMonth, shortMonth3Char, numericYear, and year (string).
  */
 function getCurrentDateParts() {
   const now = new Date();
+  const shortMonth = now.toLocaleString("en-GB", { month: "short" });
   return {
     longMonth: now.toLocaleString("en-GB", { month: "long" }),
-    shortMonth: now.toLocaleString("en-GB", { month: "short" }),
+    shortMonth: shortMonth,
+    shortMonth3Char: shortMonth.slice(0, 3), // Convert 4-char to 3-char (e.g., "Sept" -> "Sep")
     numericYear: now.getFullYear(),
     year: now.getFullYear().toString(),
   };
@@ -142,10 +144,13 @@ async function fetchPrayerDataWithRetry(
   fetchFunction: (month: string, year: string) => Promise<PrayerTimes[]>,
   longMonth: string,
   shortMonth: string,
+  shortMonth3Char: string,
   year: string,
   locationName: string
 ): Promise<PrayerTimes[]> {
   let data: PrayerTimes[] | null = null;
+
+  // First attempt: try with long month name (e.g., "September")
   try {
     data = await fetchFunction(longMonth, year);
   } catch (e) {
@@ -156,18 +161,32 @@ async function fetchPrayerDataWithRetry(
     );
   }
 
+  // Second attempt: try with short month name (e.g., "Sept")
   if (!data || data.length === 0) {
     try {
       data = await fetchFunction(shortMonth, year);
+    } catch (e) {
+      console.warn(
+        `Failed fetching ${locationName} with short month name ('${shortMonth}'), trying 3-char month ('${shortMonth3Char}'). Error: ${
+          e instanceof Error ? e.message : String(e)
+        }`
+      );
+    }
+  }
+
+  // Third attempt: try with 3-character month name (e.g., "Sep")
+  if (!data || data.length === 0) {
+    try {
+      data = await fetchFunction(shortMonth3Char, year);
     } catch (error) {
       console.error(
-        `Failed to fetch ${locationName} prayer times with short month ('${shortMonth}'): ${
+        `Failed to fetch ${locationName} prayer times with 3-char month ('${shortMonth3Char}'): ${
           error instanceof Error ? error.message : String(error)
         }`
       );
       throw new APIError(
         ErrCode.Internal,
-        `Failed to fetch ${locationName} prayer times (long & short month attempts failed)`
+        `Failed to fetch ${locationName} prayer times (long, short & 3-char month attempts failed)`
       );
     }
   }
@@ -349,11 +368,13 @@ export const collectFromBirmingham = api(
   { method: "GET", path: "/collect/birmingham" },
   async () => {
     try {
-      const { longMonth, shortMonth, year } = getCurrentDateParts();
+      const { longMonth, shortMonth, shortMonth3Char, year } =
+        getCurrentDateParts();
       const birminghamPrayerTimesData = await fetchPrayerDataWithRetry(
         fetchBirminghamPrayerTimes,
         longMonth,
         shortMonth,
+        shortMonth3Char,
         year,
         "Birmingham"
       );
@@ -517,11 +538,13 @@ export const collectFromManchester = api(
   { method: "GET", path: "/collect/manchester" },
   async () => {
     try {
-      const { longMonth, shortMonth, year } = getCurrentDateParts();
+      const { longMonth, shortMonth, shortMonth3Char, year } =
+        getCurrentDateParts();
       const manchesterPrayerTimesData = await fetchPrayerDataWithRetry(
         fetchManchesterPrayerTimesFor,
         longMonth,
         shortMonth,
+        shortMonth3Char,
         year,
         "Manchester"
       );
