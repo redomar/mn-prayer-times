@@ -46,21 +46,32 @@ export default async function Home() {
   }
 
   return (
-    <main className="min-h-screen bg-background">
-      <div className="w-full p-8 space-y-8 max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="flex justify-between items-center">
-          <h1 className="text-3xl font-bold">
-            {data.locations.length > 0 && data.locations[0].name} Prayer Times
-          </h1>
+    <main className="min-h-screen bg-background relative">
+      <div className="w-full p-6 md:p-8 space-y-8 max-w-7xl mx-auto">
+        {/* Ramadan Header */}
+        <div className="flex justify-between items-start">
+          <div>
+            <p className="text-sm uppercase tracking-[0.2em] text-primary/80 mb-1 font-amiri">
+              Ramadan Mubarak
+            </p>
+            <h1 className="text-3xl md:text-4xl font-bold font-amiri">
+              <span className="greeting-text">
+                {data.locations.length > 0 && data.locations[0].name}
+              </span>{" "}
+              Prayer Times
+            </h1>
+          </div>
           <ThemeToggle />
         </div>
 
         {/* Location Selection */}
-        <Card className="glass">
+        <Card className="glass-gold lantern-glow">
           <CardContent>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mt-5">
-              <CardTitle className="text-xl">Select Location</CardTitle>
+              <CardTitle className="text-xl font-amiri col-span-full">
+                <span className="crescent mr-2" aria-hidden="true" />
+                Select Location
+              </CardTitle>
               {data.locations.map((location) => (
                 <Link
                   key={location.id}
@@ -80,14 +91,8 @@ export default async function Home() {
 
         {/* Today's Dashboard */}
         {upcomingTimes.length > 0 && (
-          <>
-            <p>{data.locations.length > 0 && data.locations[0].name} </p>
-            <PrayerDashboard today={upcomingTimes[0]} />
-          </>
+          <PrayerDashboard today={upcomingTimes[0]} />
         )}
-
-        {/* Monthly Table */}
-        {/* <PrayerTimesTableNew times={upcomingTimes} /> */}
       </div>
     </main>
   );

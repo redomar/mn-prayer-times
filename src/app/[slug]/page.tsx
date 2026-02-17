@@ -57,20 +57,25 @@ export default async function Page(props: {
   }
 
   return (
-    <main className="min-h-screen bg-background">
-      <div className="w-full p-8 space-y-8 max-w-7xl mx-auto">
+    <main className="min-h-screen bg-background relative">
+      <div className="w-full p-6 md:p-8 space-y-8 max-w-7xl mx-auto">
 
         {/* Header */}
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-start">
           <div className="flex items-center gap-4">
             <Link href="/">
               <Button variant="outline" className="glass hover:glass-strong transition-all duration-300">
                 ← Back
               </Button>
             </Link>
-            <h1 className="text-3xl font-bold">
-              {locationName}
-            </h1>
+            <div>
+              <p className="text-xs uppercase tracking-[0.2em] text-primary/80 font-amiri">
+                Ramadan Mubarak
+              </p>
+              <h1 className="text-2xl md:text-3xl font-bold font-amiri">
+                <span className="greeting-text">{locationName}</span>
+              </h1>
+            </div>
           </div>
           <ThemeToggle />
         </div>

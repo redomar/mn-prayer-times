@@ -1,51 +1,63 @@
+@import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 5%;
-    --card: 0 0% 100% / 0.6;
-    --card-foreground: 0 0% 5%;
-    --popover: 0 0% 100% / 0.9;
-    --popover-foreground: 0 0% 5%;
-    --primary: 350 89% 60%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 96%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 45%;
-    --accent: 350 89% 60%;
-    --accent-foreground: 0 0% 100%;
+    --background: 225 30% 96%;
+    --foreground: 225 40% 12%;
+    --card: 225 25% 98% / 0.7;
+    --card-foreground: 225 40% 12%;
+    --popover: 225 25% 98% / 0.9;
+    --popover-foreground: 225 40% 12%;
+    --primary: 38 65% 55%;
+    --primary-foreground: 225 40% 8%;
+    --secondary: 225 20% 92%;
+    --secondary-foreground: 225 30% 20%;
+    --muted: 225 15% 92%;
+    --muted-foreground: 225 15% 45%;
+    --accent: 38 65% 55%;
+    --accent-foreground: 225 40% 8%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 90%;
-    --input: 0 0% 90%;
-    --ring: 350 89% 60%;
+    --border: 225 20% 85%;
+    --input: 225 20% 85%;
+    --ring: 38 65% 55%;
     --radius: 1rem;
+    --gold: 38 75% 60%;
+    --gold-soft: 38 60% 75%;
+    --indigo-deep: 230 50% 15%;
+    --sky-gradient-start: 210 60% 85%;
+    --sky-gradient-end: 225 40% 94%;
   }
 
   .dark {
-    --background: 0 0% 4%;
-    --foreground: 0 0% 95%;
-    --card: 0 0% 8% / 0.6;
-    --card-foreground: 0 0% 95%;
-    --popover: 0 0% 8% / 0.9;
-    --popover-foreground: 0 0% 95%;
-    --primary: 350 89% 65%;
-    --primary-foreground: 0 0% 4%;
-    --secondary: 0 0% 14%;
-    --secondary-foreground: 0 0% 95%;
-    --muted: 0 0% 14%;
-    --muted-foreground: 0 0% 60%;
-    --accent: 350 89% 65%;
-    --accent-foreground: 0 0% 4%;
+    --background: 230 50% 6%;
+    --foreground: 38 20% 90%;
+    --card: 230 45% 10% / 0.6;
+    --card-foreground: 38 20% 90%;
+    --popover: 230 45% 10% / 0.9;
+    --popover-foreground: 38 20% 90%;
+    --primary: 38 75% 60%;
+    --primary-foreground: 230 50% 6%;
+    --secondary: 230 40% 14%;
+    --secondary-foreground: 38 20% 85%;
+    --muted: 230 40% 14%;
+    --muted-foreground: 225 15% 55%;
+    --accent: 38 75% 60%;
+    --accent-foreground: 230 50% 6%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 20%;
-    --input: 0 0% 20%;
-    --ring: 350 89% 65%;
+    --border: 230 35% 18%;
+    --input: 230 35% 18%;
+    --ring: 38 75% 60%;
+    --gold: 38 80% 62%;
+    --gold-soft: 38 50% 40%;
+    --indigo-deep: 230 55% 8%;
+    --sky-gradient-start: 230 55% 8%;
+    --sky-gradient-end: 230 50% 4%;
   }
 
   * {
@@ -70,4 +82,237 @@
     box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
     @apply bg-card/80 border border-border/60;
   }
+
+  .glass-gold {
+    backdrop-filter: blur(30px);
+    border-radius: 1rem;
+    box-shadow:
+      0 0 30px hsl(38 75% 60% / 0.08),
+      0 20px 40px -10px rgb(0 0 0 / 0.15);
+    @apply bg-card/70 border border-primary/20;
+  }
+
+  .dark .glass-gold {
+    box-shadow:
+      0 0 40px hsl(38 75% 60% / 0.06),
+      0 20px 40px -10px rgb(0 0 0 / 0.4);
+  }
+}
+
+/* Ramadan night sky background */
+.ramadan-sky {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse at 20% 20%, hsl(230 55% 18% / 0.3) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 80%, hsl(260 40% 15% / 0.2) 0%, transparent 50%),
+    linear-gradient(to bottom, hsl(var(--sky-gradient-start)), hsl(var(--sky-gradient-end)));
+  overflow: hidden;
+}
+
+.dark .ramadan-sky {
+  background:
+    radial-gradient(ellipse at 20% 20%, hsl(250 50% 15% / 0.5) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 80%, hsl(230 60% 12% / 0.5) 0%, transparent 50%),
+    linear-gradient(to bottom, hsl(230 55% 10%), hsl(230 50% 4%));
+}
+
+/* Stars */
+.stars-container {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.star {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: hsl(38 60% 80%);
+  border-radius: 50%;
+  animation: twinkle var(--duration, 3s) ease-in-out infinite alternate;
+  animation-delay: var(--delay, 0s);
+  opacity: 0;
+}
+
+.dark .star {
+  background: hsl(38 70% 85%);
+}
+
+.star::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  background: inherit;
+  border-radius: inherit;
+  filter: blur(1px);
+}
+
+@keyframes twinkle {
+  0% { opacity: 0.1; transform: scale(0.8); }
+  50% { opacity: 0.6; }
+  100% { opacity: 0.9; transform: scale(1.2); }
+}
+
+/* Heliodon */
+.heliodon-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 2.8 / 1;
+  overflow: visible;
+}
+
+.heliodon-arc {
+  fill: none;
+  stroke: hsl(var(--primary) / 0.15);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 6;
+}
+
+.dark .heliodon-arc {
+  stroke: hsl(var(--primary) / 0.2);
+}
+
+.heliodon-horizon {
+  stroke: hsl(var(--border));
+  stroke-width: 1;
+}
+
+.heliodon-sun {
+  filter: drop-shadow(0 0 12px hsl(38 80% 60% / 0.6))
+          drop-shadow(0 0 30px hsl(38 80% 60% / 0.3));
+  transition: all 0.5s ease;
+}
+
+.heliodon-sun-below {
+  filter: drop-shadow(0 0 8px hsl(38 80% 60% / 0.3));
+  opacity: 0.4;
+}
+
+.heliodon-glow {
+  animation: sun-pulse 4s ease-in-out infinite alternate;
+}
+
+@keyframes sun-pulse {
+  0% { opacity: 0.4; r: 18; }
+  100% { opacity: 0.15; r: 28; }
+}
+
+/* Suhoor/Iftar emphasis cards */
+.suhoor-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.suhoor-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, hsl(230 50% 25% / 0.1) 0%, hsl(260 40% 30% / 0.05) 100%);
+  pointer-events: none;
+}
+
+.dark .suhoor-card::before {
+  background: linear-gradient(135deg, hsl(230 50% 25% / 0.3) 0%, hsl(260 40% 20% / 0.15) 100%);
+}
+
+.iftar-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.iftar-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, hsl(25 60% 50% / 0.08) 0%, hsl(38 70% 55% / 0.05) 100%);
+  pointer-events: none;
+}
+
+.dark .iftar-card::before {
+  background: linear-gradient(135deg, hsl(25 60% 40% / 0.2) 0%, hsl(38 70% 45% / 0.1) 100%);
+}
+
+/* Crescent decorative element */
+.crescent {
+  position: relative;
+  display: inline-block;
+}
+
+.crescent::before {
+  content: '☪';
+  font-size: 1.2em;
+  color: hsl(var(--primary));
+  filter: drop-shadow(0 0 6px hsl(var(--primary) / 0.4));
+}
+
+/* Lantern glow effect for cards */
+.lantern-glow {
+  position: relative;
+}
+
+.lantern-glow::after {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 20%;
+  right: 20%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, hsl(var(--primary) / 0.5), transparent);
+  border-radius: 0 0 50% 50%;
+}
+
+/* Font classes */
+.font-amiri {
+  font-family: 'Amiri', serif;
+}
+
+/* Ramadan greeting animation */
+.greeting-text {
+  background: linear-gradient(135deg, hsl(38 75% 55%), hsl(38 85% 70%), hsl(38 75% 55%));
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 4s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 0% center; }
+  50% { background-position: 100% center; }
+  100% { background-position: 0% center; }
+}
+
+/* Prayer card highlight for current next prayer */
+.prayer-highlight {
+  position: relative;
+}
+
+.prayer-highlight::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, hsl(var(--primary) / 0.3), hsl(var(--primary) / 0.1));
+  z-index: -1;
+}
+
+/* Floating animation for decorative elements */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.float {
+  animation: float 5s ease-in-out infinite;
+}
+
+/* Countdown timer styling */
+.countdown-digit {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.05em;
 }

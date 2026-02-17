@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Prayer Times",
-  description: "Muslim Network's prayer times calendar",
+  title: "Ramadan Prayer Times | Muslim Network",
+  description: "Suhoor & Iftar times — Ramadan Mubarak from the Muslim Network",
 };
 
 export default function RootLayout({

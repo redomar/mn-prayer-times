@@ -185,10 +185,10 @@ export const collectFromLondon = api(
       );
       return { status: ErrCode.OK, body: result };
     } catch (error) {
-      logger.error({
+      logger.error("London collection failed", {
         error: error instanceof Error ? error.message : String(error),
         stack: error instanceof Error ? error.stack : undefined,
-      }, "London collection failed");
+      });
 
       if (error instanceof APIError) {
         return { status: error.code, error: error.message };
@@ -258,10 +258,10 @@ async function fetchBirminghamPrayerTimes(
         const tdArray = extractAndCleanTableCells(rowHtml);
 
         if (tdArray.length < 14) {
-          logger.warn({
+          logger.warn("Skipping malformed Birmingham row", {
             rowLength: tdArray.length,
             rowPreview: tdArray.slice(0, 3),
-          }, "Skipping malformed Birmingham row");
+          });
           return {};
         }
 
@@ -282,9 +282,9 @@ async function fetchBirminghamPrayerTimes(
           ishaJamat: parseTime(tdArray[13]),
         };
       } catch (error) {
-        logger.warn({
+        logger.warn("Error parsing Birmingham row", {
           error: error instanceof Error ? error.message : String(error),
-        }, "Error parsing Birmingham row");
+        });
         return {};
       }
     })
@@ -344,10 +344,10 @@ export const collectFromBirmingham = api(
       );
       return { status: ErrCode.OK, body: result };
     } catch (error) {
-      logger.error({
+      logger.error("Birmingham collection failed", {
         error: error instanceof Error ? error.message : String(error),
         stack: error instanceof Error ? error.stack : undefined,
-      }, "Birmingham collection failed");
+      });
 
       if (error instanceof APIError) {
         return { status: error.code, error: error.message };
@@ -425,10 +425,10 @@ async function fetchManchesterPrayerTimesFor(
     .map((tdArray): Partial<PrayerTimes> => {
       try {
         if (tdArray.length < 15) {
-          logger.warn({
+          logger.warn("Skipping malformed Manchester row", {
             rowLength: tdArray.length,
             rowPreview: tdArray.slice(0, 3),
-          }, "Skipping malformed Manchester row");
+          });
           return {};
         }
 
@@ -487,9 +487,9 @@ async function fetchManchesterPrayerTimesFor(
           ),
         };
       } catch (error) {
-        logger.warn({
+        logger.warn("Error parsing Manchester row", {
           error: error instanceof Error ? error.message : String(error),
-        }, "Error parsing Manchester row");
+        });
         return {};
       }
     })
@@ -549,10 +549,10 @@ export const collectFromManchester = api(
       );
       return { status: ErrCode.OK, body: result };
     } catch (error) {
-      logger.error({
+      logger.error("Manchester collection failed", {
         error: error instanceof Error ? error.message : String(error),
         stack: error instanceof Error ? error.stack : undefined,
-      }, "Manchester collection failed");
+      });
 
       if (error instanceof APIError) {
         return { status: error.code, error: error.message };
@@ -575,17 +575,17 @@ export const retryManchesterCollection = api(
     const weekday = today.getDay(); // 5 = Friday
 
     if (weekday === 5 && day <= 7) {
-      logger.info({
+      logger.info("First Friday of month - retrying Manchester collection", {
         date: today.toISOString(),
-      }, "First Friday of month - retrying Manchester collection");
+      });
 
       try {
         const result = await collectFromManchester();
         return result;
       } catch (error) {
-        logger.error({
+        logger.error("Manchester retry failed", {
           error: error instanceof Error ? error.message : String(error),
-        }, "Manchester retry failed");
+        });
 
         if (error instanceof APIError) {
           return { status: error.code, error: error.message };
@@ -597,11 +597,11 @@ export const retryManchesterCollection = api(
       }
     }
 
-    logger.info({
+    logger.info("Skipping Manchester retry - not first Friday", {
       date: today.toISOString(),
       day,
       weekday,
-    }, "Skipping Manchester retry - not first Friday");
+    });
 
     return {
       status: 204,
@@ -623,8 +623,8 @@ export const dropTimesByLocationAndMonthYear = api(
         location: `Location ${p.locationId}`,
         locationId: p.locationId,
         operation: "delete_prayer_times",
-        year: p.year.toString(),
-        month: p.month.toString(),
+        year: p.year,
+        month: p.month,
         dateRange: {
           start: dateRangeTheYearMonthsStart.toISOString(),
           end: dateRangeTheYearMonthsEnd.toISOString(),
@@ -651,12 +651,12 @@ export const dropTimesByLocationAndMonthYear = api(
       await Effect.runPromise(Effect.provide(program, ObservabilityLive));
       return { status: ErrCode.OK, body: null };
     } catch (error) {
-      logger.error({
+      logger.error("Delete prayer times failed", {
         locationId: p.locationId,
         year: p.year,
         month: p.month,
         error: error instanceof Error ? error.message : String(error),
-      }, "Delete prayer times failed");
+      });
 
       if (error instanceof APIError) {
         return { status: error.code, error: error.message };
